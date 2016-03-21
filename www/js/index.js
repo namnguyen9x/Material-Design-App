@@ -385,9 +385,9 @@ var app = {
 
         var href = "http://maps.google.com/?q=" + location
 
-        //if (device.platform === 'Android') {
-        //     href = "geo:" + location
-        //}
+        if (device.platform === 'Android') {
+             href = "geo:" + location
+        }
         
         if (device.platform === 'iOS') {
             href = "http://maps.apple.com/?q=" + location
@@ -396,10 +396,6 @@ var app = {
         att.value =  href;
         anchor.setAttributeNode(att);  
         return href;
-    },
-
-    setURL: function (){
-        window.open(app.getLocation());
     },
     
     onError: function (error) {

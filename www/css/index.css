@@ -63,15 +63,16 @@ body {
 }
 
 a:link, a:visited {
-    background-color: #ffffff;
-    color: black;
+    color: #fff;
     padding: 14px 25px;
     text-align: center; 
     text-decoration: none;
+    text-decoration-color: #fff;
     display: inline-block;
 }
+
 a:hover, a:active {
-    background-color: #cccccc;
+    background-color: #fff;
 }
 
 .defaultScreen{
