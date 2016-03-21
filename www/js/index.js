@@ -178,9 +178,9 @@ var app = {
             dataStored += "Key: " + localStorage.key(i) + ", Value: " + localStorage.getItem(localStorage.key(i)) + "\n";
         }
 
-        alert("Stored Data: \n" + dataStored);
-        alert(enableLoc);
-        alert(locTimer);
+        console.log("Stored Data: \n" + dataStored);
+        console.log(enableLoc);
+        console.log(locTimer);
         
         var data;
         if (localStorage.getItem("debug")!==""){
@@ -225,6 +225,10 @@ var app = {
                 password = document.getElementById("password");
                 username.value = "";
                 password.value = "";
+                document.getElementById("location-toggle").className="toggle";
+                document.getElementById("location-timer").removeAttribute("enable");
+                var attr = document.createAttribute("disabled");
+                document.getElementById("location-timer").setAttributeNode(attr);
                 app.showAlert("All saved data was cleared", "Clear data", 0);
               }
             },"Clear Data",["Cancel","OK"]
