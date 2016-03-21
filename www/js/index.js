@@ -102,7 +102,7 @@ var app = {
         states[Connection.CELL_3G]  = 'Cell 3G connection';
         states[Connection.CELL_4G]  = 'Cell 4G connection';
         states[Connection.NONE]     = 'No network connection';
-        if (networkState=="No network connection") {
+        if (networkState==="No network connection") {
             app.showAlert("You are off-line. Please turn on network for getting notification.", "Connection", 0);
         }
     },
@@ -166,19 +166,19 @@ var app = {
         var enableLoc = false;
         var locTimer = 0;
         for (var i = 0; i < localStorage.length; i++){
-            var key = localStorage.key(i);
-            if (key=="enableLocation"){
-                enableLoc = localStorage.getItem(key);             
+            var itemKey = localStorage.key(i);
+            if (itemKey==="enableLocation"){
+                enableLoc = localStorage.getItem(itemKey);             
                 enableLoc = (enableLoc=="true");
             }
-            if (key=="locationTimer"){
-                locTimer = localStorage.getItem(key);
+            if (itemKey==="locationTimer"){
+                locTimer = localStorage.getItem(itemKey);
                 locTimer = parseInt(locTimer);
             }
             dataStored += "Key: " + localStorage.key(i) + ", Value: " + localStorage.getItem(localStorage.key(i)) + "\n";
         }
 
-        console.log("Stored Data: \n" + dataStored);
+        alert("Stored Data: \n" + dataStored);
         alert(enableLoc);
         alert(locTimer);
         
@@ -191,7 +191,7 @@ var app = {
             password = document.getElementById("password");
             var key = localStorage.key(localStorage.length - 1);
             var index = 2;
-            while (key=="lastApprovalNumber" || key=="enableLocation" || key=="locationTimer"){
+            while (key==="lastApprovalNumber" || key==="enableLocation" || key==="locationTimer"){
                 key = localStorage.key(localStorage.length - index);
                 index++;
             }
