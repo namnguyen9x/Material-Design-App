@@ -93,6 +93,16 @@ a:hover, a:active {
     width: 60%;
 }
 
+.label2{
+  float: left;
+  display: inline-block;
+  position:relative;
+  width: 35%;
+  padding: 8px 15px;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  line-height: 3.0;
+}
+
 .input-row {
   position: relative;
 }

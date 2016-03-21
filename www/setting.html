@@ -15,7 +15,7 @@
         <!-- Include the compiled Ratchet JS -->
         <script src="../www/dist/js/ratchet.js"></script>
     </head>
-    <body>
+    <body onload="onLoad()">
         <header class="bar bar-nav">
           <h1 class="title">Settings</h1>
         </header>
@@ -35,13 +35,13 @@
             
             <p style="margin-top:3%;">App Setting</p>
             <div class="input-row">
-              <label>Automatically send location data</label>
+              <label class="label2">Automatically send location data</label>
               <div class="toggle" id="location-toggle">
                  <div class="toggle-handle"></div>
               </div>
             </div>
             <div class="input-row">
-              <label>Send location data every (minutes)</label>
+              <label class="label2">Send location data every (minutes)</label>
               <input id="location-timer" type="number" min="1" max="60" value="5" disabled>
             </div>
             <table class="table-setting-button">
@@ -52,8 +52,8 @@
                 </tr>
             </table>
             
-            <button class="btn btn-positive btn-block full-screen-button" onclick="app.setURL()">Current Location</button>
-            <button class="btn btn-negative btn-block full-screen-button" onclick="app.clearData()">Erase All Data</button>
+            <button class="btn btn-positive btn-block full-screen-button" onclick="app.setURL();">Current Location</button>
+            <button class="btn btn-negative btn-block full-screen-button" onclick="app.clearData();">Erase All Data</button>
             
         </form>
         
@@ -71,7 +71,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript" src="js/support.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
 
         <script type="text/javascript">
             app.initialize();
@@ -79,16 +79,13 @@
         
         <script type="text/javascript"> 
             var enableLocation = document.getElementById("location-toggle");
-            var enable;
+            var enable = false;
             enableLocation.addEventListener('toggle', function(e){
                 alert(e.detail.isActive);
                 if (e.detail.isActive){
                     enableLocation.removeAttribute("disabled");
-                    var att = document.createAttribute("enabled");
-                    enableLocation.setAttributeNode(att);
                     enable = true;
                 }else{
-                    enableLocation.removeAttribute("enabled");
                     var att = document.createAttribute("disabled");
                     enableLocation.setAttributeNode(att);
                     enable = false;

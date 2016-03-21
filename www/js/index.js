@@ -370,7 +370,9 @@ var app = {
     },
 
     setURL: function (){
+        alert("get location");
         window.location=app.getLocation();
+        alert("get location 2");
     }
     onError: function (error) {
         console.log('Location error code: '    + error.code    + '\n' +
