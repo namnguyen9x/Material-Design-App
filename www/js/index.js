@@ -116,15 +116,17 @@ var app = {
         }
     },
 
-    saveInfo: function (key, value) {
+    saveInfo: function (key, value, enableLocation, locationTimer) {
         console.log("Save Data with key: " + key + " and value: " + value);
         for (var i = 0; i < localStorage.length; i++){
             //alert(localStorage.key(i));
-            if ((localStorage.key(i) != key) && (localStorage.key(i)!="lastApprovalNumber")){
+            if ((localStorage.key(i) != key) && (localStorage.key(i)!="lastApprovalNumber") && (localStorage.key(i)!="enableLocation") && (localStorage.key(i)!="locationTimer")){
                 localStorage.removeItem(key);
             }
         }
         localStorage.setItem(key, value);
+        localStorage.setItem("enableLocation", enableLocation);
+        localStorage.setItem("locationTimer", locationTimer);
         app.showAlert("Data was saved", "Save", 0);
     },
 

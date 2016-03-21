@@ -42,20 +42,20 @@
                 <input id="password" type="password" placeholder="Your password">
             </div>
             <div class="input-row">
-              <label>Allow location data sent to server automatically</label>
+              <label>Automatically send location data</label>
               <div class="toggle">
                  <div id="location-toggle" class="toggle-handle"></div>
               </div>
             </div>
             <div class="input-row">
-              <label>Send location data to server every (minutes)</label>
-              <input id="location-timer" type="number" min="1" max="60" value="5">
+              <label>Send location data every (minutes)</label>
+              <input id="location-timer" type="number" min="1" max="60" value="5" disabled>
             </div>
             <table class="table-setting-button">
                 <tr>
-                    <td style="width:40%;"><button class="btn btn-positive btn-block">Save</button></td>
+                    <td style="width:40%;"><button class="btn btn-positive btn-block" onclick="onSubmit()">Save</button></td>
                     <td style="width:20%"></td>
-                    <td style="width:40%;"><button class="btn btn-negative btn-block">Clear</button></td>
+                    <td style="width:40%;"><button class="btn btn-negative btn-block" onclick="clearFields()">Clear</button></td>
                 </tr>
             </table>
             <button class="btn btn-positive btn-block full-screen-button" >Current Location</button>
@@ -73,5 +73,48 @@
           </a>
         </nav>
         
+        <script type="text/javascript"> 
+            var enableLocation = document.getElementById("location-toggle");
+            document.querySelector("#location-toggle").addEventListener("toggle", function(e){
+                alert(e.detail.isActive);
+                if (e.detail.isActive){
+                    enableLocation.removeAttribute("disabled");
+                    var att = document.createAttribute("enabled");
+                    enableLocation.setAttributeNode(att);
+                }else{
+                    enableLocation.removeAttribute("enabled");
+                    var att = document.createAttribute("disabled");
+                    enableLocation.setAttributeNode(att);
+                }
+            });
+            function onSubmit() {
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+                var locationTimer = document.getElementById("location-timer").value;
+                alert(enableLocation.value);
+                if (username!="" && password!="") {
+                    app.saveInfo(username, password, enableLocation.value, locationTimer);
+                }else{
+                    if(username==""){
+                        app.showAlert("Username is empty", "Error", 0);
+                    }else{
+                        if(password==""){
+                            app.showAlert("Password is empty", "Error", 0);
+                        };
+                    }; 
+                };
+            };
+
+            function clearFields(){
+                var username = document.getElementById("username");
+                var password = document.getElementById("password");
+                username.value = "";
+                password.value = "";
+            };
+
+            function onLoad(){
+                app.getLoginInfo();
+            };
+        </script>
     </body>
 </html>
