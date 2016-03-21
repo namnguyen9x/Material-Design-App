@@ -19,14 +19,41 @@
 
         <!-- Include the compiled Ratchet CSS -->
         <link href="../www/dist/css/ratchet.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
 
         <!-- Include the compiled Ratchet JS -->
         <script src="../www/dist/js/ratchet.js"></script>
     </head>
     <body>
-       <header class="bar bar-nav">
-          <h1 class="title">WorkflowFirst Tracker Setting</h1>
-        </header>
+        
+        <form id="form" onsubmit="return false" class="input-group">
+            <div class="input-row">
+                <label>Username</label>
+                <input id="username" type="email" placeholder="someuser@example.com">
+            </div>
+            <div class="input-row">
+                <label>Password</label>
+                <input id="password" type="password" placeholder="Your password">
+            </div>
+            <div class="input-row">
+              <label>Allow location data sent to server automatically</label>
+              <div class="toggle">
+                 <div id="location-toggle" class="toggle-handle"></div>
+              </div>
+            </div>
+            <div class="input-row">
+              <label>Send location data to server every (minutes)</label>
+              <input id="location-timer" type="number" min="1" max="60" value="5">
+            </div>
+            <table id="table-setting-button">
+                <tr>
+                    <td style="width:40%;"><button class="btn btn-positive btn-block">Save</button></td>
+                    <td style="width:20%"></td>
+                    <td style="width:40%;"><button class="btn btn-negative btn-block">Clear</button></td>
+                </tr>
+            </table>
+            <button class="btn btn-negative btn-block" style="margin-top:10%">Erase All Data</button>
+        </form>
         
         <nav class="bar bar-tab">
           <a class="tab-item" href="index.html" data-transition="slide-in">
