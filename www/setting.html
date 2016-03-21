@@ -42,7 +42,7 @@
             </div>
             <div class="input-row">
               <label class="label2">Send location data every (minutes)</label>
-              <input id="location-timer" type="number" min="1" max="60" value="5">
+              <input id="location-timer" type="number" min="1" max="60" value="5" disabled>
             </div>
             <table class="table-setting-button">
                 <tr>
@@ -81,18 +81,21 @@
                 alert(e.detail.isActive);
                 if (e.detail.isActive){
                     enableLocation.removeAttribute("disabled");
+                    var attr = document.createAttribute("enable");
+                    enableLocation.setAttributeNode(attr);
                     enable = true;
                 }else{
-                    var att = document.createAttribute("disabled");
-                    enableLocation.setAttributeNode(att);
+                    enableLocation.removeAttribute("enable");
+                    var attr = document.createAttribute("disabled");
+                    enableLocation.setAttributeNode(attr);
                     enable = false;
                 }
             });
+            
             function onSubmit() {
                 var username = document.getElementById("username").value;
                 var password = document.getElementById("password").value;
                 var locationTimer = document.getElementById("location-timer").value;
-                alert(enable);
                 if (username!="" && password!="") {
                     app.saveInfo(username, password, enable, locationTimer);
                 }else{

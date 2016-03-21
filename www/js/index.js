@@ -370,9 +370,7 @@ var app = {
     },
 
     setURL: function (){
-        alert("get location");
-        window.location=app.getLocation();
-        alert("get location 2");
+        window.open(app.getLocation());
     },
     
     onError: function (error) {
