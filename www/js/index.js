@@ -18,6 +18,8 @@
  */
 var menuOpen = false;
 var menuDiv = "";
+var locationTimer = 0;
+var enableLocation = false;
 var app = {
     // Application Constructor
     initialize: function() {
@@ -49,6 +51,19 @@ var app = {
         cordova.plugins.notification.badge.configure({ autoClear: true });
         app.getLocation();
         app.runOnBackground();
+        
+        enableLocation = app.getSaveData("enableLocation");
+        enableLocation = enableLocation.split(",");
+        enableLocation = enableLocation[1];
+        enableLocation = (enableLocation==="true");
+        
+        locationTimer = app.getSaveData("locationTimer");
+        locationTimer = locationTimer.split(",");
+        locationTimer = locationTimer[1];
+        if (locationTimer!=="") {
+            locationTimer = parseInt(locationTimer)*60000;   
+        }
+        
         //app.loadJSON(link);
         //app.notification();
 
@@ -120,11 +135,12 @@ var app = {
         console.log("Save Data with key: " + key + " and value: " + value);
         for (var i = 0; i < localStorage.length; i++){
             //alert(localStorage.key(i));
-            if ((localStorage.key(i) != key) && (localStorage.key(i)!="lastApprovalNumber") && (localStorage.key(i)!="enableLocation") && (localStorage.key(i)!="locationTimer")){
+            if ((localStorage.key(i)!=key) && (localStorage.key(i)!="lastApprovalNumber") && (localStorage.key(i)!="enableLocation") && (localStorage.key(i)!="locationTimer")){
                 localStorage.removeItem(key);
             }
         }
         localStorage.setItem(key, value);
+        console.log(enableLocation + ", " + locationTimer);
         localStorage.setItem("enableLocation", enableLocation);
         localStorage.setItem("locationTimer", locationTimer);
         app.showAlert("Data was saved", "Save", 0);
@@ -147,12 +163,25 @@ var app = {
         console.log("Get Login Information");
 
         var dataStored;
+        var enableLoc = false;
+        var locTimer = 0;
         for (var i = 0; i < localStorage.length; i++){
+            var key = localStorage.key(i);
+            if (key=="enableLocation"){
+                enableLoc = localStorage.getItem(key);             
+                enableLoc = (enableLoc=="true");
+            }
+            if (key=="locationTimer"){
+                locTimer = localStorage.getItem(key);
+                locTimer = parseInt(locTimer);
+            }
             dataStored += "Key: " + localStorage.key(i) + ", Value: " + localStorage.getItem(localStorage.key(i)) + "\n";
         }
 
         console.log("Stored Data: \n" + dataStored);
-
+        console.log(enableLoc);
+        console.log(locTimer);
+        
         var data;
         if (localStorage.getItem("debug")!==""){
             localStorage.removeItem("debug");
@@ -170,11 +199,19 @@ var app = {
             if (value!==""){
                 username.value = key;
                 password.value = value;
+                if (enableLoc===true){
+                    document.getElementById("location-toggle").className="toggle active";
+                    document.getElementById("location-timer").removeAttribute("disabled");
+                    var attr = document.createAttribute("enable");
+                    document.getElementById("location-timer").setAttributeNode(attr);
+                }
+                if (locTimer!==0 && locTimer!==""){
+                    document.getElementById("location-timer").value = locTimer;
+                }
                 data = key.concat(",",value);
             }
         }
         console.log("Data: " + data);
-        return data;
     },
 
     clearData: function(){
@@ -226,29 +263,19 @@ var app = {
 
         // Called when background mode has been activated
         cordova.plugins.backgroundMode.onactivate = function () {
-            var counter = 0;
-            var counter2 = 0;
             var tasks = setInterval(function () {
-                counter++;
-                //if (counter % 30 === 0) {
-                    //cordova.plugins.backgroundMode.configure({
-                    //    text: 'Running since ' + counter + ' sec'
-                    //});
-                    app.callLoadJSON();
-                //}
+                app.callLoadJSON();
             }, 60000);
-            //120000
 
-            var location = setInterval(function () {
-                counter2++;
-                //if (counter2 % 30 === 0) {
-                    //cordova.plugins.backgroundMode.configure({
-                    //    text: 'Running since ' + counter2 + ' sec'
-                    //});
+            if (locationTimer!==""){
+                var location = setInterval(function () {
                     app.getLocation();
-                //}
-            }, 300000);
-            //300000
+                }, locationTimer);
+            }else{
+                var location = setInterval(function () {
+                    app.getLocation();
+                }, 300000);
+            }
         }
 
         // Get informed when the background mode has been deactivated
@@ -256,18 +283,15 @@ var app = {
             clearInterval(task);
             clearInterval(location);
             cordova.plugins.notification.badge.clear();
-            var counter3 = 0;
-            var locationForceground = setInterval(function () {
-                counter3++;
-                //if (counter3 % 30 === 0) {
-                    //cordova.plugins.backgroundMode.configure({
-                    //    text: 'Running since ' + counter3 + ' sec'
-                    //});
+            if (locationTimer!==""){
+                var locationForceground = setInterval(function () {
                     app.getLocation();
-                //}
-            }, 300000);
-            //300000
-            //alert("Deactivate");
+                }, locationTimer);
+            }else{
+                var locationForceground = setInterval(function () {
+                    app.getLocation();
+                }, 300000);
+            }
         };
     },
 

@@ -52,8 +52,8 @@
                 </tr>
             </table>
             
-            <button class="btn btn-positive btn-block full-screen-button" onclick="app.setURL();">Current Location</button>
-            <button class="btn btn-negative btn-block full-screen-button" onclick="app.clearData();">Erase All Data</button>
+            <button class="btn btn-positive btn-block full-screen-button" onclick="app.setURL()">Current Location</button>
+            <button class="btn btn-negative btn-block full-screen-button" onclick="app.clearData()">Erase All Data</button>
             
         </form>
         
@@ -76,18 +76,18 @@
         
         <script type="text/javascript"> 
             var enableLocation = document.getElementById("location-toggle");
+            var locationTimer = document.getElementById("location-timer");
             var enable = false;
             enableLocation.addEventListener('toggle', function(e){
-                alert(e.detail.isActive);
                 if (e.detail.isActive){
-                    enableLocation.removeAttribute("disabled");
+                    locationTimer.removeAttribute("disabled");
                     var attr = document.createAttribute("enable");
-                    enableLocation.setAttributeNode(attr);
+                    locationTimer.setAttributeNode(attr);
                     enable = true;
                 }else{
-                    enableLocation.removeAttribute("enable");
+                    locationTimer.removeAttribute("enable");
                     var attr = document.createAttribute("disabled");
-                    enableLocation.setAttributeNode(attr);
+                    locationTimer.setAttributeNode(attr);
                     enable = false;
                 }
             });
@@ -95,9 +95,8 @@
             function onSubmit() {
                 var username = document.getElementById("username").value;
                 var password = document.getElementById("password").value;
-                var locationTimer = document.getElementById("location-timer").value;
                 if (username!="" && password!="") {
-                    app.saveInfo(username, password, enable, locationTimer);
+                    app.saveInfo(username, password, enable, locationTimer.value);
                 }else{
                     if(username==""){
                         app.showAlert("Username is empty", "Error", 0);
