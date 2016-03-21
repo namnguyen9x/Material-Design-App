@@ -4,15 +4,6 @@
         <title></title>
         <meta name="viewpoer" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
         
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript" src="js/support.js"></script>
-
-        <script type="text/javascript">
-            app.initialize();
-        </script>
-        
         <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -28,11 +19,11 @@
         <header class="bar bar-nav">
           <h1 class="title">Settings</h1>
         </header>
+        
         <form id="form" onsubmit="return false" class="input-group">
-            <div class="input-row">
-            </div>
-            <div class="input-row">
-            </div>
+            <div class="input-row"></div>
+            
+            <p style="margin-top:3%;">Account</p>
             <div class="input-row">
                 <label>Username</label>
                 <input id="username" type="email" placeholder="someuser@example.com">
@@ -41,10 +32,12 @@
                 <label>Password</label>
                 <input id="password" type="password" placeholder="Your password">
             </div>
+            
+            <p style="margin-top:3%;">App Setting</p>
             <div class="input-row">
               <label>Automatically send location data</label>
-              <div class="toggle">
-                 <div id="location-toggle" class="toggle-handle"></div>
+              <div class="toggle" id="location-toggle">
+                 <div class="toggle-handle"></div>
               </div>
             </div>
             <div class="input-row">
@@ -58,8 +51,10 @@
                     <td style="width:40%;"><button class="btn btn-negative btn-block" onclick="clearFields()">Clear</button></td>
                 </tr>
             </table>
-            <button class="btn btn-positive btn-block full-screen-button" >Current Location</button>
-            <button class="btn btn-negative btn-block full-screen-button" >Erase All Data</button>
+            
+            <button class="btn btn-positive btn-block full-screen-button" onclick="app.setURL()">Current Location</button>
+            <button class="btn btn-negative btn-block full-screen-button" onclick="app.clearData()">Erase All Data</button>
+            
         </form>
         
         <nav class="bar bar-tab">
@@ -73,27 +68,39 @@
           </a>
         </nav>
         
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/support.js"></script>
+
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+        
         <script type="text/javascript"> 
             var enableLocation = document.getElementById("location-toggle");
-            document.querySelector("#location-toggle").addEventListener("toggle", function(e){
+            var enable;
+            enableLocation.addEventListener('toggle', function(e){
                 alert(e.detail.isActive);
                 if (e.detail.isActive){
                     enableLocation.removeAttribute("disabled");
                     var att = document.createAttribute("enabled");
                     enableLocation.setAttributeNode(att);
+                    enable = true;
                 }else{
                     enableLocation.removeAttribute("enabled");
                     var att = document.createAttribute("disabled");
                     enableLocation.setAttributeNode(att);
+                    enable = false;
                 }
             });
             function onSubmit() {
                 var username = document.getElementById("username").value;
                 var password = document.getElementById("password").value;
                 var locationTimer = document.getElementById("location-timer").value;
-                alert(enableLocation.value);
+                alert(enable);
                 if (username!="" && password!="") {
-                    app.saveInfo(username, password, enableLocation.value, locationTimer);
+                    app.saveInfo(username, password, enable, locationTimer);
                 }else{
                     if(username==""){
                         app.showAlert("Username is empty", "Error", 0);

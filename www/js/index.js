@@ -162,7 +162,7 @@ var app = {
             password = document.getElementById("password");
             var key = localStorage.key(localStorage.length - 1);
             var index = 2;
-            while (key=="lastApprovalNumber"){
+            while (key=="lastApprovalNumber" || key=="enableLocation" || key=="locationTimer"){
                 key = localStorage.key(localStorage.length - index);
                 index++;
             }
@@ -365,9 +365,13 @@ var app = {
         }
 
         att.value =  href;
-        anchor.setAttributeNode(att);      
+        anchor.setAttributeNode(att);  
+        return href;
     },
 
+    setURL: function (){
+        window.location=app.getLocation();
+    }
     onError: function (error) {
         console.log('Location error code: '    + error.code    + '\n' +
               'Message: ' + error.message + '\n');
