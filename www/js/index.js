@@ -179,8 +179,8 @@ var app = {
         }
 
         console.log("Stored Data: \n" + dataStored);
-        console.log(enableLoc);
-        console.log(locTimer);
+        alert(enableLoc);
+        alert(locTimer);
         
         var data;
         if (localStorage.getItem("debug")!==""){
@@ -381,9 +381,10 @@ var app = {
 
         var href = "http://maps.google.com/?q=" + location
 
-        if (device.platform === 'Android') {
-             href = "geo:" + location
-        }
+        //if (device.platform === 'Android') {
+        //     href = "geo:" + location
+        //}
+        
         if (device.platform === 'iOS') {
             href = "http://maps.apple.com/?q=" + location
         }
