@@ -38,8 +38,8 @@
               </li>
               <li class="table-view-cell">
                 Send location data every (minutes)
-                <div class="input-row">
-                  <input id="location-timer" type="number" min="1" max="60" value="5">
+                <div style="position: absolute; top: 3px; right: 11px; font-size: 13px;">
+                    <input id="location-timer" type="number" min="1" max="60" value="5" style="border:0;">
                 </div>
               </li>
             </ul>
@@ -64,6 +64,7 @@
                 </tr>
             </table>
             
+            <button class="btn btn-primary btn-block full-screen-button" onclick="app.updateData()">Update Data</button>
             <button class="btn btn-positive btn-block full-screen-button"><a id="locationAnchor">Current Location</a></button>
             <button class="btn btn-negative btn-block full-screen-button" onclick="app.clearData()">Erase All Data</button>
             

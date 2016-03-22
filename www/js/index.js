@@ -219,6 +219,8 @@ var app = {
             }
         }
         console.log("Data: " + data);
+        console.log("Pass: " + Base64.encode("123456Aa"));
+        app.updateData();
     },
 
     clearData: function(){
@@ -412,5 +414,24 @@ var app = {
     timeConverter: function (UNIX_timestamp){
       var d = new Date(UNIX_timestamp);
       return d.toString();
+    },
+    
+    updateData: function(){
+        var link = "http://demo.workflowfirst.net/apiget.aspx?";
+        $.post(link,
+            {
+                username: "nam@workflowfirst.com",
+                password: Base64.encode("123456Aa"),
+                path:"&root/Users[UserID=\"nam@workflowfirst.com\"]",
+                actionid: "update", 
+                json:
+                {
+                    FullName: "Nam Nguyen Hoang"
+                }
+            },
+            function(data, status){
+                console.log("AAAAAAAA");
+                alert("Data: " + data + "\nStatus: " + status);
+        }, "jsonp");
     }
 };
