@@ -18,8 +18,10 @@
  */
 var menuOpen = false;
 var menuDiv = "";
-var locationTimer = 0;
-var enableLocation = false;
+var enableLoc = false;
+var locTimer = 0;
+var enableLocation = document.getElementById("location-toggle");
+var locationTimer = document.getElementById("location-timer");
 var app = {
     // Application Constructor
     initialize: function() {
@@ -47,21 +49,21 @@ var app = {
                 cordova.plugins.notification.badge.registerPermission(function (granted) {
                 });
             }
-        });   
+        });  
         cordova.plugins.notification.badge.configure({ autoClear: true });
         app.getLocation();
         app.runOnBackground();
         
-        enableLocation = app.getSaveData("enableLocation");
-        enableLocation = enableLocation.split(",");
-        enableLocation = enableLocation[1];
-        enableLocation = (enableLocation==="true");
+        enableLoc = app.getSaveData("enableLocation");
+        enableLoc = enableLoc.split(",");
+        enableLoc = enableLoc[1];
+        enableLoc = (enableLoc==="true");
         
-        locationTimer = app.getSaveData("locationTimer");
-        locationTimer = locationTimer.split(",");
-        locationTimer = locationTimer[1];
-        if (locationTimer!=="") {
-            locationTimer = parseInt(locationTimer)*60000;   
+        locTimer = app.getSaveData("locationTimer");
+        locTimer = locTimer.split(",");
+        locTimer = locTimer[1];
+        if (locTimer!=="") {
+            locTimer = (parseInt(locTimer)*60000);   
         }
         
         //app.loadJSON(link);
@@ -135,14 +137,19 @@ var app = {
         console.log("Save Data with key: " + key + " and value: " + value);
         for (var i = 0; i < localStorage.length; i++){
             //alert(localStorage.key(i));
-            if ((localStorage.key(i)!=key) && (localStorage.key(i)!="lastApprovalNumber") && (localStorage.key(i)!="enableLocation") && (localStorage.key(i)!="locationTimer")){
+            if ((localStorage.key(i)!==key) && (localStorage.key(i)!=="lastApprovalNumber") && (localStorage.key(i)!=="enableLocation") && (localStorage.key(i)!=="locationTimer")){
                 localStorage.removeItem(key);
             }
         }
+        
         localStorage.setItem(key, value);
-        console.log(enableLocation + ", " + locationTimer);
-        localStorage.setItem("enableLocation", enableLocation);
-        localStorage.setItem("locationTimer", locationTimer);
+        
+        if (enableLocation!==enableLoc){
+            localStorage.setItem("enableLocation", enableLocation);   
+        }
+        if(locTimer!=="" && ((locTimer/60000).toString()!==locationTimer)){
+            localStorage.setItem("locationTimer", locationTimer);   
+        }        
         app.showAlert("Data was saved", "Save", 0);
     },
 
@@ -200,13 +207,13 @@ var app = {
                 username.value = key;
                 password.value = value;
                 if (enableLoc===true){
-                    document.getElementById("location-toggle").className="toggle active";
-                    document.getElementById("location-timer").removeAttribute("disabled");
+                    enableLocation.className="toggle active";
+                    locationTimer.removeAttribute("disabled");
                     var attr = document.createAttribute("enable");
-                    document.getElementById("location-timer").setAttributeNode(attr);
+                    locationTimer.setAttributeNode(attr);
                 }
                 if (locTimer!==0 && locTimer!==""){
-                    document.getElementById("location-timer").value = locTimer;
+                    locationTimer.value = locTimer;
                 }
                 data = key.concat(",",value);
             }
@@ -215,7 +222,6 @@ var app = {
     },
 
     clearData: function(){
-        //localStorage.clear();
         navigator.notification.confirm(
             "Do you want to clear all login data from the app?", 
             function (button) {
@@ -225,10 +231,10 @@ var app = {
                 password = document.getElementById("password");
                 username.value = "";
                 password.value = "";
-                document.getElementById("location-toggle").className="toggle";
-                document.getElementById("location-timer").removeAttribute("enable");
+                enableLocation.className="toggle";
+                locationTimer.removeAttribute("enable");
                 var attr = document.createAttribute("disabled");
-                document.getElementById("location-timer").setAttributeNode(attr);
+                locationTimer.setAttributeNode(attr);
                 app.showAlert("All saved data was cleared", "Clear data", 0);
               }
             },"Clear Data",["Cancel","OK"]
@@ -274,13 +280,13 @@ var app = {
             if (locationTimer!==""){
                 var location = setInterval(function () {
                     app.getLocation();
-                }, locationTimer);
+                }, locTimer);
             }else{
                 var location = setInterval(function () {
                     app.getLocation();
                 }, 300000);
             }
-        }
+        };
 
         // Get informed when the background mode has been deactivated
         cordova.plugins.backgroundMode.ondeactivate = function () {
@@ -290,7 +296,7 @@ var app = {
             if (locationTimer!==""){
                 var locationForceground = setInterval(function () {
                     app.getLocation();
-                }, locationTimer);
+                }, locTimer);
             }else{
                 var locationForceground = setInterval(function () {
                     app.getLocation();
@@ -346,7 +352,7 @@ var app = {
                             approvalNumber.push(json.response[i].ApprovalNumber);
                         }
                         if (approvalNumber.length > 0){
-                            approvalNumber = approvalNumber.sort(function(a, b){return b-a});
+                            approvalNumber = approvalNumber.sort(function(a, b){return b-a;});
                             localStorage.setItem("lastApprovalNumber", approvalNumber[0]);
                             //alert("Largest Approval Number: " + approvalNumber[0]);
                             app.notification(approvalNumber.length, true);
@@ -383,14 +389,14 @@ var app = {
         var att = document.createAttribute("href");
         var location = position.coords.latitude + "," + position.coords.longitude;
 
-        var href = "http://maps.google.com/?q=" + location
+        var href = "http://maps.google.com/?q=" + location;
 
         if (device.platform === 'Android') {
-             href = "geo:" + location
+             href = "geo:" + location;
         }
         
         if (device.platform === 'iOS') {
-            href = "http://maps.apple.com/?q=" + location
+            href = "http://maps.apple.com/?q=" + location;
         }
 
         att.value =  href;
