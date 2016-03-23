@@ -417,21 +417,44 @@ var app = {
     },
     
     updateData: function(){
-        var link = "http://demo.workflowfirst.net/apiget.aspx?";
+        var link = "http://demo.workflowfirst.net/apiget.aspx?&format=json";
+        
+        $.ajax({
+                type: "POST",
+                url: link,
+                dataType: 'jsonp',
+                data:
+                {
+                    username: "nam@workflowfirst.com",
+                    password: Base64.encode("123456Aa"),
+                    path:"/Users[UserID=\"nam@workflowfirst.com\"]",
+                    actionid: "update", 
+                    json:
+                    {
+                        "FullName": "Nam Nguyen Hoang"
+                    }
+                },
+                success:function(data, status){
+                    alert("Data: " + data.response[0].FullName + "\nStatus: " + status);
+                },
+                error:function(error){
+                    console.log("Error with retrieving data from server. " + error);
+                }      
+        });
+        
         $.post(link,
             {
                 username: "nam@workflowfirst.com",
                 password: Base64.encode("123456Aa"),
-                path:"&root/Users[UserID=\"nam@workflowfirst.com\"]",
+                path:"/Users[UserID=\"nam@workflowfirst.com\"]",
                 actionid: "update", 
                 json:
                 {
-                    FullName: "Nam Nguyen Hoang"
+                    "FullName": "Nam Nguyen Hoang"
                 }
             },
             function(data, status){
-                console.log("AAAAAAAA");
-                alert("Data: " + data + "\nStatus: " + status);
+                alert("Data: " + data.response[0].FullName + "\nStatus: " + status);
         }, "jsonp");
     }
 };
