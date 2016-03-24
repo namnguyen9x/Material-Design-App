@@ -18,6 +18,7 @@
  */
 var menuOpen = false;
 var menuDiv = "";
+var homeScreen = document.getElementById("homeScreen");
 var enableLoc = false;
 var locTimer = 0;
 var enableLocation = document.getElementById("location-toggle");
@@ -44,6 +45,7 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function() {
+        app.loadHomeScreen();
         cordova.plugins.notification.badge.hasPermission(function (granted) {
             if (granted===false) {
                 cordova.plugins.notification.badge.registerPermission(function (granted) {
@@ -80,6 +82,40 @@ var app = {
         window.history.back();
     },
 
+    loadHomeScreen: function(){
+        var att = document.createAttribute("src");
+
+        var link = "http://demo.workflowfirst.net/";
+        var src = "http://demo.workflowfirst.net/?m=1";
+        
+        var loginInfo = app.getLoginInfo();
+        loginInfo = loginInfo.split(",");
+        var username = loginInfo[0];
+        var password = loginInfo[1];
+        
+        if (username!=="" && password!==""){
+            link += "verifylogin.aspx?";
+            link += "&username=" + username;
+            link += "&password=" + Base64.encode(password);
+            link += "&format=json";
+            $.ajax({
+                    url: src,
+                    dataType: 'jsonp',
+                    success:function(json){
+                        att.value = src;
+                        homeScreen.setAttributeNode(att);  
+                    },
+                    error:function(){
+                        att.value =  src;
+                        homeScreen.setAttributeNode(att); 
+                    }      
+            });           
+        }else{
+            att.value =  src;
+            homeScreen.setAttributeNode(att);   
+        }  
+    },
+    
     //checking connection
     checkConnection: function () {
         //localStorage.setItem("lastApprovalNumber", 8);
@@ -218,6 +254,7 @@ var app = {
                 data = key.concat(",",value);
             }
         }
+        return data;
         console.log("Data: " + data);
         console.log("Pass: " + Base64.encode("123456Aa"));
     },
@@ -318,7 +355,8 @@ var app = {
             //getting user's credentials
             var key = localStorage.key(localStorage.length - 1);
             var index = 2;
-            while (key=="lastApprovalNumber"){
+            
+            while (key==="lastApprovalNumber" || key==="enableLocation" || key==="locationTimer"){
                 key = localStorage.key(localStorage.length - index);
                 index++;
             }
