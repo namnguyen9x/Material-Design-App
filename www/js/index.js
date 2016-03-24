@@ -83,7 +83,8 @@ var app = {
     },
 
     loadHomeScreen: function(){
-        console.log("Load home screen");
+        alert("Load home screen");
+        
         var att = document.createAttribute("src");
 
         var link = "http://demo.workflowfirst.net/";
@@ -94,21 +95,26 @@ var app = {
         var username = loginInfo[0];
         var password = loginInfo[1];
         
+        aler(username + ", " + password);
+        
         if (username!=="" && password!==""){
             link += "verifylogin.aspx?";
             link += "&username=" + username;
             link += "&password=" + Base64.encode(password);
             link += "&format=json";
-            console.log(link);
+            
+            alert(link);
             
             $.ajax({
                     url: link,
                     dataType: 'jsonp',
                     success:function(json){
+                        aler(json);
                         att.value = src;
                         homeScreen.setAttributeNode(att);  
                     },
-                    error:function(){
+                    error:function(error){
+                        alert(error);
                         att.value =  src;
                         homeScreen.setAttributeNode(att); 
                     }      
