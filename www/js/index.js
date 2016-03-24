@@ -264,7 +264,7 @@ var app = {
             }
         }
         return data;
-        console.log("Data: " + data);
+        alert("Data: " + data);
         console.log("Pass: " + Base64.encode("123456Aa"));
     },
 
