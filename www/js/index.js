@@ -83,6 +83,7 @@ var app = {
     },
 
     loadHomeScreen: function(){
+        console.log("Load home screen");
         var att = document.createAttribute("src");
 
         var link = "http://demo.workflowfirst.net/";
@@ -98,8 +99,10 @@ var app = {
             link += "&username=" + username;
             link += "&password=" + Base64.encode(password);
             link += "&format=json";
+            console.log(link);
+            
             $.ajax({
-                    url: src,
+                    url: link,
                     dataType: 'jsonp',
                     success:function(json){
                         att.value = src;
