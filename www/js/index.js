@@ -220,7 +220,6 @@ var app = {
         }
         console.log("Data: " + data);
         console.log("Pass: " + Base64.encode("123456Aa"));
-        app.updateData();
     },
 
     clearData: function(){
@@ -279,14 +278,16 @@ var app = {
                 app.callLoadJSON();
             }, 60000);
 
-            if (locationTimer!==""){
-                var location = setInterval(function () {
-                    app.getLocation();
-                }, locTimer);
-            }else{
-                var location = setInterval(function () {
-                    app.getLocation();
-                }, 300000);
+            if (enableLoc===true){
+                if (locationTimer!==""){
+                    var location = setInterval(function () {
+                        app.getLocation();
+                    }, locTimer);
+                }else{
+                    var location = setInterval(function () {
+                        app.getLocation();
+                    }, 300000);
+                }
             }
         };
 
@@ -295,14 +296,16 @@ var app = {
             clearInterval(task);
             clearInterval(location);
             cordova.plugins.notification.badge.clear();
-            if (locationTimer!==""){
-                var locationForceground = setInterval(function () {
-                    app.getLocation();
-                }, locTimer);
-            }else{
-                var locationForceground = setInterval(function () {
-                    app.getLocation();
-                }, 300000);
+            if (enableLoc===true){
+                if (locationTimer!==""){
+                    var locationForceground = setInterval(function () {
+                        app.getLocation();
+                    }, locTimer);
+                }else{
+                    var locationForceground = setInterval(function () {
+                        app.getLocation();
+                    }, 300000);
+                }
             }
         };
     },
@@ -417,32 +420,27 @@ var app = {
     },
     
     updateData: function(){
-        var link = "http://demo.workflowfirst.net/apiget.aspx?&format=json";
-        
-        $.ajax({
-                type: "POST",
-                url: link,
-                dataType: 'jsonp',
-                data:
-                {
-                    username: "nam@workflowfirst.com",
-                    password: Base64.encode("123456Aa"),
-                    path:"/Users[UserID=\"nam@workflowfirst.com\"]",
-                    actionid: "update", 
-                    json:
-                    {
-                        "FullName": "Nam Nguyen Hoang"
-                    }
-                },
-                success:function(data, status){
-                    alert("Data: " + data.response[0].FullName + "\nStatus: " + status);
-                },
-                error:function(error){
-                    console.log("Error with retrieving data from server. " + error);
-                }      
+        var link = "http://demo.workflowfirst.net/apiput.aspx";
+        var path = "/Users[UserID=\"nam@workflowfirst.com\"]";
+        path = encodeURIComponent(path);
+        var username = "nam@workflowfirst.com";
+        username = encodeURIComponent(username);
+        var password = Base64.encode("123456Aa");
+        var action = "update";
+        var record = { "FullName": "Nam Nguyen Hoang" };
+    
+        $.ajax
+        ({
+            type: "POST",
+            url: link + "?username=" + username + "&password=" + password + "&path=" + path + "&actionid=" + action + "&format=json",
+            dataType: "jsonp",
+            data: JSON.stringify({"FullName": "Nam Nguyen Hoang"}),
+            success: function () {
+                alert("Thanks!"); 
+            }
         });
-        
-        $.post(link,
+
+        /*$.post(link,
             {
                 username: "nam@workflowfirst.com",
                 password: Base64.encode("123456Aa"),
@@ -454,7 +452,7 @@ var app = {
                 }
             },
             function(data, status){
-                alert("Data: " + data.response[0].FullName + "\nStatus: " + status);
-        }, "jsonp");
+                alert("Status: " + status);
+        }, "jsonp");*/
     }
 };
