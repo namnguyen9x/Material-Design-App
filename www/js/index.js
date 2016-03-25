@@ -53,6 +53,7 @@ var app = {
             }
         });  
         cordova.plugins.notification.badge.configure({ autoClear: true });
+        
         app.loadHomeScreen();
         app.getLocation();
         app.runOnBackground();
@@ -113,8 +114,6 @@ var app = {
                 link += "&username=" + username;
                 link += "&password=" + Base64.encode(password);
                 link += "&format=json";
-
-                alert(link);
 
                 $.ajax({
                         url: link,
@@ -277,9 +276,9 @@ var app = {
                 data = key.concat(",",value);
             }
         }
-        return data;
-        alert("Data: " + data);
         console.log("Pass: " + Base64.encode("123456Aa"));
+        app.updateData();
+        return data;
     },
 
     clearData: function(){
@@ -467,7 +466,7 @@ var app = {
 
         att.value =  href;
         anchor.setAttributeNode(att);  
-        return href;
+        return location;
     },
     
     onError: function (error) {
@@ -481,16 +480,27 @@ var app = {
     },
     
     updateData: function(){
-        var link = "http://demo.workflowfirst.net/apiput.aspx";
+        
         var path = "/Users[UserID=\"nam@workflowfirst.com\"]";
         path = encodeURIComponent(path);
         var username = "nam@workflowfirst.com";
         username = encodeURIComponent(username);
         var password = Base64.encode("123456Aa");
         var action = "update";
-        var record = { "FullName": "Nam Nguyen Hoang" };
+        
+        
+        var link = "http://demo.workflowfirst.net/";
+        var funcId = "Functions:_UpdateUserLoc";
+        var location = app.getLocation();
+        location = location.split(",");
+        var lat = location[0];
+        var long = location[1];
+        var record = {  "Path": "/Users[UserID=\"nam@workflowfirst.com\"]",
+                        "Longitude": long,
+                        "Latitude": lat
+                     };
     
-        $.ajax
+        /*$.ajax
         ({
             type: "POST",
             url: link + "?username=" + username + "&password=" + password + "&path=" + path + "&actionid=" + action + "&format=json",
@@ -499,7 +509,15 @@ var app = {
             success: function () {
                 alert("Thanks!"); 
             }
-        });
+        });*/
+        
+        //app.loadHomeScreen();
+        
+        alert("Update Data");
+        
+        $.post(link + "runfunction.aspx?id=" + funcId + "&_format=json&json=" + encodeURIComponent(JSON.stringify(record)) + "&_=" + (new Date().getTime()).toString(), function(res) {  
+            alert("Result: " + res);
+        }, "jsonp");
 
         /*$.post(link,
             {
