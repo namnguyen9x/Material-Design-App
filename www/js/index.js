@@ -450,9 +450,9 @@ var app = {
               'Speed: '             + position.coords.speed             + '\n' +
               'Timestamp: '         + app.timeConverter(position.timestamp)                + '\n');
 
-        var anchor = document.getElementById("locationAnchor"); 
+        /*var anchor = document.getElementById("locationAnchor"); 
         var att = document.createAttribute("href");
-        var location = position.coords.latitude + "," + position.coords.longitude;
+        
 
         var href = "http://maps.google.com/?q=" + location;
 
@@ -465,7 +465,9 @@ var app = {
         }
 
         att.value =  href;
-        anchor.setAttributeNode(att);  
+        anchor.setAttributeNode(att);  */
+        var location = position.coords.latitude + "," + position.coords.longitude;
+        alert(location);
         return location;
     },
     
@@ -480,6 +482,7 @@ var app = {
     },
     
     updateData: function(){
+        alert("Update Data");
         
         var path = "/Users[UserID=\"nam@workflowfirst.com\"]";
         path = encodeURIComponent(path);
@@ -491,31 +494,30 @@ var app = {
         
         var link = "http://demo.workflowfirst.net/";
         var funcId = "Functions:_UpdateUserLoc";
-        var location = app.getLocation();
+        var location = "";
+        location = app.getLocation();
+        location = location.toString();
+        while (location===""){
+           setInterval(function(){
+               location = app.getLocation();
+               location = location.toString();
+           }, 1000); 
+        }
         location = location.split(",");
         var lat = location[0];
         var long = location[1];
-        var record = {  "Path": "/Users[UserID=\"nam@workflowfirst.com\"]",
-                        "Longitude": long,
-                        "Latitude": lat
+        var record = {  "Path": "/Users[UserID=\"nam@workflowfirst.com\"]", 
+                        "Longitude": "123", 
+                        "Latitude": "345"
                      };
-    
-        /*$.ajax
-        ({
-            type: "POST",
-            url: link + "?username=" + username + "&password=" + password + "&path=" + path + "&actionid=" + action + "&format=json",
-            dataType: "jsonp",
-            data: JSON.stringify({"FullName": "Nam Nguyen Hoang"}),
-            success: function () {
-                alert("Thanks!"); 
-            }
-        });*/
+
         
+        console.log(link + "runfunction.aspx?id=" + funcId + "&_format=json&json=" + encodeURIComponent(JSON.stringify(record)));
         //app.loadHomeScreen();
         
-        alert("Update Data");
-        
-        $.post(link + "runfunction.aspx?id=" + funcId + "&_format=json&json=" + encodeURIComponent(JSON.stringify(record)) + "&_=" + (new Date().getTime()).toString(), function(res) {  
+        //http://demo.workflowfirst.net/runfunction.aspx?id=Functions:_UpdateUserLoc&json=%7B%22Path%22%3A%22%2FUsers%5BUserID%3D%5C%22nam%40workflowfirst.com%5C%22%5D%22%2C%22Longitude%22%3A%22123%22%2C%22Latitude%22%3A%223333%22%7D&format=json
+
+        $.post(link + "runfunction.aspx?id=" + funcId + "&_format=json&json=" + encodeURIComponent(JSON.stringify(record)), function(res) {  
             alert("Result: " + res);
         }, "jsonp");
 
