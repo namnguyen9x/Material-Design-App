@@ -45,7 +45,7 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function() {
-        app.loadHomeScreen();
+        
         cordova.plugins.notification.badge.hasPermission(function (granted) {
             if (granted===false) {
                 cordova.plugins.notification.badge.registerPermission(function (granted) {
@@ -53,6 +53,7 @@ var app = {
             }
         });  
         cordova.plugins.notification.badge.configure({ autoClear: true });
+        app.loadHomeScreen();
         app.getLocation();
         app.runOnBackground();
         
@@ -83,45 +84,57 @@ var app = {
     },
 
     loadHomeScreen: function(){
-        alert("Load home screen");
-        
         var att = document.createAttribute("src");
-
         var link = "http://demo.workflowfirst.net/";
         var src = "http://demo.workflowfirst.net/?m=1";
         
-        var loginInfo = app.getLoginInfo();
+        //getting username and password
+        var loginInfo = "";
+        if (localStorage.length > 0){
+            var key = localStorage.key(localStorage.length - 1);
+            var index = 2;
+            while (key==="lastApprovalNumber" || key==="enableLocation" || key==="locationTimer"){
+                key = localStorage.key(localStorage.length - index);
+                index++;
+            }
+            var value = localStorage.getItem(key);
+            if (value!==""){
+                loginInfo = key.concat(",",value);
+            }
+        }
+        
         loginInfo = loginInfo.split(",");
         var username = loginInfo[0];
         var password = loginInfo[1];
-        
-        aler(username + ", " + password);
-        
-        if (username!=="" && password!==""){
-            link += "verifylogin.aspx?";
-            link += "&username=" + username;
-            link += "&password=" + Base64.encode(password);
-            link += "&format=json";
-            
-            alert(link);
-            
-            $.ajax({
-                    url: link,
-                    dataType: 'jsonp',
-                    success:function(json){
-                        aler(json);
-                        att.value = src;
-                        homeScreen.setAttributeNode(att);  
-                    },
-                    error:function(error){
-                        alert(error);
-                        att.value =  src;
-                        homeScreen.setAttributeNode(att); 
-                    }      
-            });           
+
+        if (loginInfo!==""){
+            if (username!=="" && password!==""){
+                link += "verifylogin.aspx?";
+                link += "&username=" + username;
+                link += "&password=" + Base64.encode(password);
+                link += "&format=json";
+
+                alert(link);
+
+                $.ajax({
+                        url: link,
+                        dataType: 'jsonp',
+                        success:function(json){
+                            att.value = src;
+                            homeScreen.setAttributeNode(att);  
+                        },
+                        error:function(error){
+                            att.value =  src;
+                            homeScreen.setAttributeNode(att); 
+                        }      
+                });           
+            }else{
+                att.value =  src;
+                homeScreen.setAttributeNode(att);   
+            }
         }else{
             att.value =  src;
-            homeScreen.setAttributeNode(att);   
+            homeScreen.setAttributeNode(att);  
         }  
     },
     
@@ -213,7 +226,7 @@ var app = {
 
     getLoginInfo: function () {
         console.log("Get Login Information");
-
+        
         var dataStored;
         var enableLoc = false;
         var locTimer = 0;
@@ -234,10 +247,11 @@ var app = {
         console.log(enableLoc);
         console.log(locTimer);
         
-        var data;
+        var data = "";
         if (localStorage.getItem("debug")!==""){
             localStorage.removeItem("debug");
         }
+        
         if (localStorage.length > 0){
             username = document.getElementById("username");
             password = document.getElementById("password");
